@@ -1,10 +1,87 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>My Web Page</title>
+    <meta charset="UTF-8">
+    <title>Texto para Fala</title>
 </head>
 <body>
-    <h1>Welcome to My Web Page</h1>
-    <p>This is a simple HTML structure.</p>
+    <h1>Texto para Fala</h1>
+    <textarea id="text-to-speech" rows="4" cols="50"></textarea>
+    <select id="voice-select"></select>
+    <button onclick="speak()">Falar</button>
+    <button onclick="pause()">Pausar</button>
+    <button onclick="resume()">Continuar</button>
+    <button onclick="rewind()">Retroceder</button>
+    <button onclick="forward()">Avançar</button>
+
+    <script>
+
+        window.onload = function() {
+            window.speechSynthesis.cancel();
+            currentWordIndex = 0;
+        };
+
+        var select = document.getElementById("voice-select");
+        var speech = null;
+        var text = null;
+        var words = null;
+        var currentWordIndex = 0;
+
+        function populateVoices() {
+            var voices = window.speechSynthesis.getVoices();
+            var defaultVoiceName = 'Microsoft Francisca Online (Natural) - Portuguese (Brazil)';
+            voices.forEach(function(voice, index) {
+                var option = document.createElement("option");
+                option.value = index;
+                option.text = voice.name + " (" + voice.lang + ")";
+                select.appendChild(option);
+
+                // Se esta é a voz padrão, defina o valor do dropdown para este índice
+                if (voice.name === defaultVoiceName) {
+                    select.value = index;
+                }
+            });
+        }
+
+        window.speechSynthesis.onvoiceschanged = populateVoices;
+
+        function speak() {
+            text = document.getElementById("text-to-speech").value;
+            words = text.split(' ');
+            speakFromCurrentWord();
+        }
+
+        function speakFromCurrentWord() {
+            if (currentWordIndex < words.length) {
+                speech = new SpeechSynthesisUtterance(words.slice(currentWordIndex).join(' '));
+
+                // Define a voz com base na opção selecionada no dropdown
+                var voices = window.speechSynthesis.getVoices();
+                speech.voice = voices[select.value];
+
+                window.speechSynthesis.speak(speech);
+            }
+        }
+
+        function pause() {
+            window.speechSynthesis.pause();
+        }
+
+        function resume() {
+            window.speechSynthesis.resume();
+        }
+
+        function rewind() {
+            window.speechSynthesis.cancel();
+            currentWordIndex = Math.max(currentWordIndex - 5, 0);
+            speakFromCurrentWord();
+        }
+
+        function forward() {
+            window.speechSynthesis.cancel();
+            currentWordIndex = Math.min(currentWordIndex + 5, words.length);
+            speakFromCurrentWord();
+        }
+    </script>
 </body>
 </html>
