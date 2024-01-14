@@ -3,16 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <title>Texto para Fala</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <h1>Texto para Fala</h1>
-    <textarea id="text-to-speech" rows="4" cols="50"></textarea>
+    <<textarea id="text-to-speech" rows="4" cols="50">
+        O que é Lorem Ipsum?
+        Lorem Ipsum é simplesmente uma simulação de texto da indústria tipográfica e de impressos, e vem sendo utilizado desde o século XVI, quando um impressor desconhecido pegou uma bandeja de tipos e os embaralhou para fazer um livro de modelos de tipos. Lorem Ipsum sobreviveu não só a cinco séculos, como também ao salto para a editoração eletrônica, permanecendo essencialmente inalterado. Se popularizou na década de 60, quando a Letraset lançou decalques contendo passagens de Lorem Ipsum, e mais recentemente quando passou a ser integrado a softwares de editoração eletrônica como Aldus PageMaker.
+        </textarea>
     <select id="voice-select"></select>
-    <button onclick="speak()">Falar</button>
-    <button onclick="pause()">Pausar</button>
-    <button onclick="resume()">Continuar</button>
-    <button onclick="rewind()">Retroceder</button>
-    <button onclick="forward()">Avançar</button>
+    <button onclick="speak()"><i class="fas fa-bullhorn"></i></button>
+    <button onclick="pause()"><i class="fas fa-pause"></i></button>
+    <button onclick="resume()"><i class="fas fa-play"></i></button>
+    <button onclick="rewind()"><i class="fas fa-backward"></i></button>
+    <button onclick="forward()"><i class="fas fa-forward"></i></button>
 
     <script>
 
@@ -46,8 +51,14 @@
         window.speechSynthesis.onvoiceschanged = populateVoices;
 
         function speak() {
+            // Cancela qualquer fala atual
+            window.speechSynthesis.cancel();
+
+            // Atualiza o texto a ser falado
             text = document.getElementById("text-to-speech").value;
             words = text.split(' ');
+
+            // Começa a falar o texto
             speakFromCurrentWord();
         }
 
